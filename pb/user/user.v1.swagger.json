@@ -1,0 +1,266 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "pb/user/user.v1.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "User"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/user": {
+      "get": {
+        "operationId": "User_ListUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListUserReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "page_size",
+            "description": "每页条数",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "page_num",
+            "description": "第几页",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "order",
+            "description": "正序或倒序 ascend  descend",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "search_text",
+            "description": "全局搜索关键字",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "search_field",
+            "description": "搜索字段",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "field",
+            "description": "排序关键字",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "cache",
+            "description": "yes:缓存，no:不缓存",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "filter_map",
+            "description": "多字段搜索,精准匹配",
+            "in": "query",
+            "required": false,
+            "type": "object"
+          }
+        ],
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/v1/user/{id}": {
+      "get": {
+        "operationId": "User_GetUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UserDTO"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "用户ID",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "User"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "protobufNullValue": {
+      "type": "integer",
+      "format": "int32",
+      "enum": [
+        0
+      ],
+      "default": 0,
+      "description": "`NullValue` is a singleton enumeration to represent the null value for the\n`Value` type union.\n\n The JSON representation for `NullValue` is JSON `null`.\n\n - 0: Null value."
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1ListUserReply": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1UserDTO"
+          },
+          "title": "用户列表"
+        },
+        "count": {
+          "type": "integer",
+          "format": "int32",
+          "title": "总数"
+        }
+      }
+    },
+    "v1UserDTO": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "title": "用户ID，主键"
+        },
+        "created_at": {
+          "type": "string",
+          "title": "创建时间"
+        },
+        "updated_at": {
+          "type": "string",
+          "title": "更新时间"
+        },
+        "username": {
+          "type": "string",
+          "title": "名称，最大长度128"
+        },
+        "nickname": {
+          "type": "string",
+          "title": "昵称，最大长度128"
+        },
+        "user_id": {
+          "type": "string",
+          "title": "用户标识，唯一且不为空，最大长度128"
+        },
+        "dep_id": {
+          "type": "string",
+          "title": "部门标识，最大长度2048"
+        },
+        "dep": {
+          "type": "string",
+          "title": "部门名称，最大长度2048"
+        },
+        "manager": {
+          "type": "string",
+          "title": "管理者，最大长度128"
+        },
+        "avatar": {
+          "type": "string",
+          "title": "头像URL，最大长度1024"
+        },
+        "active": {
+          "type": "boolean",
+          "title": "是否激活，默认为true"
+        },
+        "tel": {
+          "type": "string",
+          "title": "手机号码，最大长度32"
+        },
+        "email": {
+          "type": "string",
+          "title": "邮箱地址，最大长度128"
+        },
+        "data_source": {
+          "type": "object",
+          "title": "源数据，用于存储额外的动态数据"
+        },
+        "disable": {
+          "type": "boolean",
+          "title": "是否禁用，默认为false"
+        },
+        "dd_id": {
+          "type": "string",
+          "title": "钉钉ID，最大长度128"
+        },
+        "fs_id": {
+          "type": "string",
+          "title": "飞书ID，最大长度128"
+        }
+      },
+      "title": "User 用户信息"
+    }
+  }
+}

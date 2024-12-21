@@ -1,0 +1,225 @@
+syntax = "proto3";
+
+
+package ops.codo.notice.channel.v1;
+
+option go_package = "codo-notice/pb/channel";
+
+import "google/api/annotations.proto";
+import "google/protobuf/struct.proto";
+import "khttp/middleware.proto";
+
+service Channel {
+  rpc ListChannel(ListChannelRequest) returns (ListChannelReply) {
+    option (google.api.http) = {
+      get: "/v1/channel"
+    };
+    option (github.ccheers.pggh.khttp.middleware) = {
+      names: ["JWTMiddleware"]
+    };
+  };
+  rpc GetChannel(GetChannelRequest) returns (ChannelDTO) {
+    option (google.api.http) = {
+      get: "/v1/channel/{id}"
+    };
+    option (github.ccheers.pggh.khttp.middleware) = {
+      names: ["JWTMiddleware"]
+    };
+  };
+  rpc CreateChannel(CreateChannelRequest) returns (ChannelDTO) {
+    option (google.api.http) = {
+      post: "/v1/channel"
+      body: "*"
+    };
+    option (github.ccheers.pggh.khttp.middleware) = {
+      names: ["JWTMiddleware"]
+    };
+  };
+  rpc UpdateChannel(UpdateChannelRequest) returns (UpdateChannelReply) {
+    option (google.api.http) = {
+      put: "/v1/channel"
+      body: "*"
+    };
+    option (github.ccheers.pggh.khttp.middleware) = {
+      names: ["JWTMiddleware"]
+    };
+  };
+  rpc UpdateChannelBatch(UpdateChannelBatchRequest) returns (UpdateChannelBatchReply) {
+    option (google.api.http) = {
+      patch: "/v1/channel"
+      body: "*"
+    };
+    option (github.ccheers.pggh.khttp.middleware) = {
+      names: ["JWTMiddleware"]
+    };
+  };
+  rpc DeleteChannel(DeleteChannelRequest) returns (DeleteChannelReply) {
+    option (google.api.http) = {
+      delete: "/v1/channel"
+      body: "*"
+    };
+    option (github.ccheers.pggh.khttp.middleware) = {
+      names: ["JWTMiddleware"]
+    };
+  };
+}
+
+message DeleteChannelRequest {
+  repeated uint32 ids = 1;
+}
+message DeleteChannelReply {}
+
+message UpdateChannelBatchRequest {
+  repeated uint32 ids = 1;
+  string name = 2;
+  string use = 3;
+  repeated string user = 4;
+  repeated ContactPointDTO contact_points = 5;
+  repeated ContactPointDTO custom_items = 6;
+}
+message UpdateChannelBatchReply {}
+
+message UpdateChannelRequest {
+  uint32 id = 1;
+  string name = 2;
+  string use = 3;
+  repeated string user = 4;
+  repeated ContactPointDTO contact_points = 5;
+  repeated ContactPointDTO custom_items = 6;
+}
+message UpdateChannelReply {}
+
+message CreateChannelRequest {
+  string name = 1;
+  string use = 2;
+  repeated string user = 3;
+  repeated ContactPointDTO contact_points = 4;
+  repeated ContactPointDTO custom_items = 5;
+}
+
+message GetChannelRequest {
+  uint32 id = 1;
+}
+
+message ListChannelRequest {
+  // 每页条数
+  int32 pageSize = 1;
+
+  // 第几页
+  int32 pageNum = 2;
+
+  // 正序或倒序 ascend  descend
+  string order = 3;
+
+  // 全局搜索关键字
+  string searchText = 4;
+
+  // 搜索字段
+  string searchField = 5;
+
+  // 排序关键字
+  string field = 6;
+
+  // yes:缓存，no:不缓存
+  string cache = 7;
+
+  // 多字段搜索,精准匹配
+  google.protobuf.Struct filter_map = 8;
+}
+message ListChannelReply {
+  // 列表
+  repeated ChannelDTO data = 1;
+  // 总数
+  int32 count = 2;
+}
+
+message AlertWebhookDTO {
+  // URL
+  string url = 1;
+  // 别名
+  string alias = 2;
+  // 同意 or 拒绝
+  bool is_approve = 3;
+  bool is_reject = 4;
+}
+
+// ContactPoint 联系点定义
+message ContactPointDTO {
+  // ID 主键
+  uint32 id = 1;
+
+  // 创建时间
+  string created_at = 2;
+
+  // 更新时间
+  string updated_at = 3;
+
+  // 类型，不为空，默认值为"default"，最大长度16
+  string type = 4;
+
+  // 通道ID
+  uint32 channel_id = 5;
+
+  // 模板ID
+  uint32 tpl_id = 6;
+
+  // 地址，最大长度1024
+  string webhook = 7;
+
+  // 密钥，最大长度1024
+  string secret = 8;
+
+  // 等级列表
+  repeated string severity = 9;
+
+  // 等级描述，最大长度1024
+  string severity_desc = 10;
+
+  // 是否显示，可选值："yes"/"no"，默认值为"no"，最大长度16
+  string show = 11;
+
+  // 是否固定，可选值："yes"/"no"，默认值为"yes"，最大长度16
+  string fixed = 12;
+
+  // 通知回调
+  repeated AlertWebhookDTO alert_webhooks = 13;
+}
+
+// Channel 模板定义
+message ChannelDTO {
+  // ID 主键
+  uint32 id = 1;
+
+  // 创建时间
+  string created_at = 2;
+
+  // 更新时间
+  string updated_at = 3;
+
+  // 创建人
+  string created_by = 4;
+
+  // 更新人
+  string updated_by = 5;
+
+  // 通道名称，唯一，最大长度256
+  string name = 6;
+
+  // 用途，不为空，默认值为"default"，最大长度45
+  string use = 7;
+
+  // 用户列表
+  repeated string user = 8;
+
+  // 用户组ID列表
+  repeated uint32 group = 9;
+
+  // 联系点列表
+  repeated ContactPointDTO contact_points = 10;
+
+  // 自定义项列表
+  repeated ContactPointDTO custom_items = 11;
+
+  // 字段重写规则，用于短信电话消息
+  map<string, string> default_rule = 12;
+}

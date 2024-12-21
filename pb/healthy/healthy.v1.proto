@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package ops.codo.notice.healthy.v1;
+
+option go_package = "codo-notice/pb/healthy";
+
+import "google/api/annotations.proto";
+import "khttp/middleware.proto";
+
+service Healthy {
+  // 健康检查
+  rpc Healthy(HealthyRequest) returns (HealthyReply) {
+    option (google.api.http) = {
+      get: "/healthz"
+    };
+    option (github.ccheers.pggh.khttp.middleware) = {
+      names: ["JWTMiddleware"]
+    };
+  };
+}
+
+message HealthyRequest {}
+message HealthyReply {
+  // 数据库状态 正常会返回 ok
+  string mysql = 1;
+  // redis状态 正常会返回 ok
+  string redis = 2;
+}

@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package github.ccheers.pggh.khttp;
+
+option go_package = "github.com/Ccheers/protoc-gen-go-kratos-http/khttp;khttp";
+
+message RawJson {
+    bytes json = 1;
+}

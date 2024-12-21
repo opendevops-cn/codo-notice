@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package github.ccheers.pggh.khttp;
+
+option go_package = "github.com/Ccheers/protoc-gen-go-kratos-http/khttp;khttp";
+option java_multiple_files = true;
+option java_outer_classname = "MiddlewareProto";
+option java_package = "com.github.ccheers.khttp";
+option objc_class_prefix = "KHTTP";
+
+import "google/protobuf/descriptor.proto";
+
+extend google.protobuf.MethodOptions {
+  // See `HttpRule`.
+  Middleware middleware = 873912;
+}
+
+message Middleware {
+  repeated string names = 1;
+}

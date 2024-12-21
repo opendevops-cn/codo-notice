@@ -1,0 +1,538 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "pb/router/router.v1.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "Router"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/router": {
+      "get": {
+        "operationId": "Router_ListRouter",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListRouterReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pageSize",
+            "description": "每页条数",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageNum",
+            "description": "第几页",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "order",
+            "description": "正序或倒序 ascend  descend",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "searchText",
+            "description": "全局搜索关键字",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "searchField",
+            "description": "搜索字段",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "field",
+            "description": "排序关键字",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "cache",
+            "description": "yes:缓存，no:不缓存",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "filter_map",
+            "description": "多字段搜索,精准匹配",
+            "in": "query",
+            "required": false,
+            "type": "object"
+          }
+        ],
+        "tags": [
+          "Router"
+        ]
+      },
+      "delete": {
+        "operationId": "Router_DeleteRouter",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DeleteRouterReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1DeleteRouterRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Router"
+        ]
+      },
+      "post": {
+        "operationId": "Router_CreateRouter",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1RouterDTO"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateRouterRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Router"
+        ]
+      },
+      "put": {
+        "operationId": "Router_UpdateRouter",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateRouterReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1UpdateRouterRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Router"
+        ]
+      },
+      "patch": {
+        "operationId": "Router_UpdateRouterBatch",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateRouterBatchReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1UpdateRouterBatchRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Router"
+        ]
+      }
+    },
+    "/v1/router-alert": {
+      "get": {
+        "operationId": "Router_AlertRouterGET",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1AlertRouterReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "Router"
+        ]
+      },
+      "post": {
+        "operationId": "Router_AlertRouterPOST",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1AlertRouterReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1AlertRouterRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Router"
+        ]
+      }
+    },
+    "/v1/router/{id}": {
+      "get": {
+        "operationId": "Router_GetRouter",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1RouterDTO"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "Router"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "protobufNullValue": {
+      "type": "integer",
+      "format": "int32",
+      "enum": [
+        0
+      ],
+      "default": 0,
+      "description": "`NullValue` is a singleton enumeration to represent the null value for the\n`Value` type union.\n\n The JSON representation for `NullValue` is JSON `null`.\n\n - 0: Null value."
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1AlertRouterReply": {
+      "type": "object"
+    },
+    "v1AlertRouterRequest": {
+      "type": "object"
+    },
+    "v1CreateRouterRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "路由名称，唯一，最大长度256"
+        },
+        "description": {
+          "type": "string",
+          "title": "路由描述，最大长度1024"
+        },
+        "status": {
+          "type": "string",
+          "title": "是否激活，可选值：\"yes\"/\"no\"，默认值为\"yes\"，最大长度16"
+        },
+        "channel_id": {
+          "type": "integer",
+          "format": "int64",
+          "title": "通道ID，默认值为0"
+        },
+        "condition_list": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          },
+          "title": "触发条件，二维数组形式"
+        }
+      }
+    },
+    "v1DeleteRouterReply": {
+      "type": "object"
+    },
+    "v1DeleteRouterRequest": {
+      "type": "object",
+      "properties": {
+        "ids": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      }
+    },
+    "v1ListRouterReply": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1RouterDTO"
+          },
+          "title": "列表"
+        },
+        "count": {
+          "type": "integer",
+          "format": "int32",
+          "title": "总数"
+        }
+      }
+    },
+    "v1RouterDTO": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "title": "ID 主键"
+        },
+        "created_at": {
+          "type": "string",
+          "title": "创建时间"
+        },
+        "updated_at": {
+          "type": "string",
+          "title": "更新时间"
+        },
+        "created_by": {
+          "type": "string",
+          "title": "创建人"
+        },
+        "updated_by": {
+          "type": "string",
+          "title": "更新人"
+        },
+        "name": {
+          "type": "string",
+          "title": "路由名称，唯一，最大长度256"
+        },
+        "description": {
+          "type": "string",
+          "title": "路由描述，最大长度1024"
+        },
+        "status": {
+          "type": "string",
+          "title": "是否激活，可选值：\"yes\"/\"no\"，默认值为\"yes\"，最大长度16"
+        },
+        "channel_id": {
+          "type": "integer",
+          "format": "int64",
+          "title": "通道ID，默认值为0"
+        },
+        "condition_list": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          },
+          "title": "触发条件，二维数组形式"
+        }
+      },
+      "title": "Router 路由定义"
+    },
+    "v1UpdateRouterBatchReply": {
+      "type": "object"
+    },
+    "v1UpdateRouterBatchRequest": {
+      "type": "object",
+      "properties": {
+        "ids": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "name": {
+          "type": "string",
+          "title": "路由名称，唯一，最大长度256"
+        },
+        "description": {
+          "type": "string",
+          "title": "路由描述，最大长度1024"
+        },
+        "status": {
+          "type": "string",
+          "title": "是否激活，可选值：\"yes\"/\"no\"，默认值为\"yes\"，最大长度16"
+        },
+        "channel_id": {
+          "type": "integer",
+          "format": "int64",
+          "title": "通道ID，默认值为0"
+        },
+        "condition_list": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          },
+          "title": "触发条件，二维数组形式"
+        }
+      }
+    },
+    "v1UpdateRouterReply": {
+      "type": "object"
+    },
+    "v1UpdateRouterRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string",
+          "title": "路由名称，唯一，最大长度256"
+        },
+        "description": {
+          "type": "string",
+          "title": "路由描述，最大长度1024"
+        },
+        "status": {
+          "type": "string",
+          "title": "是否激活，可选值：\"yes\"/\"no\"，默认值为\"yes\"，最大长度16"
+        },
+        "channel_id": {
+          "type": "integer",
+          "format": "int64",
+          "title": "通道ID，默认值为0"
+        },
+        "condition_list": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          },
+          "title": "触发条件，二维数组形式"
+        }
+      }
+    }
+  }
+}

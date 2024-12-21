@@ -1,0 +1,215 @@
+syntax = "proto3";
+
+
+package ops.codo.notice.routers.v1;
+
+option go_package = "codo-notice/pb/router";
+
+import "google/api/annotations.proto";
+import "google/protobuf/struct.proto";
+import "khttp/middleware.proto";
+
+service Router {
+  rpc ListRouter(ListRouterRequest) returns (ListRouterReply) {
+    option (google.api.http) = {
+      get: "/v1/router"
+    };
+    option (github.ccheers.pggh.khttp.middleware) = {
+      names: ["JWTMiddleware"]
+    };
+  };
+  rpc GetRouter(GetRouterRequest) returns (RouterDTO) {
+    option (google.api.http) = {
+      get: "/v1/router/{id}"
+    };
+    option (github.ccheers.pggh.khttp.middleware) = {
+      names: ["JWTMiddleware"]
+    };
+  };
+  rpc CreateRouter(CreateRouterRequest) returns (RouterDTO) {
+    option (google.api.http) = {
+      post: "/v1/router"
+      body: "*"
+    };
+    option (github.ccheers.pggh.khttp.middleware) = {
+      names: ["JWTMiddleware"]
+    };
+  };
+  rpc UpdateRouter(UpdateRouterRequest) returns (UpdateRouterReply) {
+    option (google.api.http) = {
+      put: "/v1/router"
+      body: "*"
+    };
+    option (github.ccheers.pggh.khttp.middleware) = {
+      names: ["JWTMiddleware"]
+    };
+  };
+  rpc UpdateRouterBatch(UpdateRouterBatchRequest) returns (UpdateRouterBatchReply) {
+    option (google.api.http) = {
+      patch: "/v1/router"
+      body: "*"
+    };
+    option (github.ccheers.pggh.khttp.middleware) = {
+      names: ["JWTMiddleware"]
+    };
+  };
+  rpc DeleteRouter(DeleteRouterRequest) returns (DeleteRouterReply) {
+    option (google.api.http) = {
+      delete: "/v1/router"
+      body: "*"
+    };
+    option (github.ccheers.pggh.khttp.middleware) = {
+      names: ["JWTMiddleware"]
+    };
+  };
+  rpc AlertRouterPOST(AlertRouterRequest) returns (AlertRouterReply) {
+    option (google.api.http) = {
+      post: "/v1/router-alert"
+      body: "*"
+    };
+    option (github.ccheers.pggh.khttp.middleware) = {
+      names: ["JWTMiddleware"]
+    };
+  };
+  rpc AlertRouterGET(AlertRouterRequest) returns (AlertRouterReply) {
+    option (google.api.http) = {
+      get: "/v1/router-alert"
+    };
+    option (github.ccheers.pggh.khttp.middleware) = {
+      names: ["JWTMiddleware"]
+    };
+  };
+}
+
+message AlertRouterRequest {}
+message AlertRouterReply {}
+
+message DeleteRouterRequest {
+  repeated uint32 ids = 1;
+}
+message DeleteRouterReply {}
+
+message UpdateRouterBatchRequest {
+  repeated uint32 ids = 1;
+  // 路由名称，唯一，最大长度256
+  string name = 6;
+
+  // 路由描述，最大长度1024
+  string description = 7;
+
+  // 是否激活，可选值："yes"/"no"，默认值为"yes"，最大长度16
+  string status = 8;
+
+  // 通道ID，默认值为0
+  uint32 channel_id = 9;
+
+  // 触发条件，二维数组形式
+  google.protobuf.ListValue condition_list = 10;
+}
+message UpdateRouterBatchReply {}
+
+message UpdateRouterRequest {
+  uint32 id = 1;
+  // 路由名称，唯一，最大长度256
+  string name = 6;
+
+  // 路由描述，最大长度1024
+  string description = 7;
+
+  // 是否激活，可选值："yes"/"no"，默认值为"yes"，最大长度16
+  string status = 8;
+
+  // 通道ID，默认值为0
+  uint32 channel_id = 9;
+
+  // 触发条件，二维数组形式
+  google.protobuf.ListValue condition_list = 10;
+}
+message UpdateRouterReply {}
+
+message CreateRouterRequest {
+  // 路由名称，唯一，最大长度256
+  string name = 6;
+
+  // 路由描述，最大长度1024
+  string description = 7;
+
+  // 是否激活，可选值："yes"/"no"，默认值为"yes"，最大长度16
+  string status = 8;
+
+  // 通道ID，默认值为0
+  uint32 channel_id = 9;
+
+  // 触发条件，二维数组形式
+  google.protobuf.ListValue condition_list = 10;
+}
+
+message GetRouterRequest {
+  uint32 id = 1;
+}
+
+message ListRouterRequest {
+  // 每页条数
+  int32 pageSize = 1;
+
+  // 第几页
+  int32 pageNum = 2;
+
+  // 正序或倒序 ascend  descend
+  string order = 3;
+
+  // 全局搜索关键字
+  string searchText = 4;
+
+  // 搜索字段
+  string searchField = 5;
+
+  // 排序关键字
+  string field = 6;
+
+  // yes:缓存，no:不缓存
+  string cache = 7;
+
+  // 多字段搜索,精准匹配
+  google.protobuf.Struct filter_map = 8;
+}
+message ListRouterReply {
+  // 列表
+  repeated RouterDTO data = 1;
+  // 总数
+  int32 count = 2;
+}
+
+
+// Router 路由定义
+message RouterDTO {
+  // ID 主键
+  uint32 id = 1;
+
+  // 创建时间
+  string created_at = 2;
+
+  // 更新时间
+  string updated_at = 3;
+
+  // 创建人
+  string created_by = 4;
+
+  // 更新人
+  string updated_by = 5;
+
+  // 路由名称，唯一，最大长度256
+  string name = 6;
+
+  // 路由描述，最大长度1024
+  string description = 7;
+
+  // 是否激活，可选值："yes"/"no"，默认值为"yes"，最大长度16
+  string status = 8;
+
+  // 通道ID，默认值为0
+  uint32 channel_id = 9;
+
+  // 触发条件，二维数组形式
+  google.protobuf.ListValue condition_list = 10;
+}

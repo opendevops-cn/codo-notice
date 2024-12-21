@@ -1,0 +1,209 @@
+syntax = "proto3";
+package kratos.api;
+
+option go_package = "codo-notice/internal/conf;conf";
+
+import "google/protobuf/duration.proto";
+
+message Bootstrap {
+  // 服务配置
+  Server server = 1;
+  // 数据库配置
+  Data data = 2;
+  // 应用元数据
+  AppMetadata metadata = 3;
+  // Otel 配置
+  Otel otel = 4;
+  // 服务注册配置
+  EtcdRegistry etcdRegistry = 5;
+  // 服务发现配置
+  ClientDiscovery greeterRpcConf = 6;
+  // 中间件配置
+  Middleware middleware = 7;
+  // 通知配置
+  NotifyConfig notifyConfig = 8;
+  // Hook回调配置
+  Hook hook = 9;
+}
+
+message AppMetadata {
+  enum Environment {
+    NONE = 0;
+    DEV = 1;
+    PRE = 2;
+    PRD = 3;
+  }
+  string name = 1;
+  Environment env = 2;
+  string gatewayPrefix = 3;
+  string gatewayToken = 4;
+}
+
+
+message Otel {
+  message Trace {
+    string endpoint = 1;
+    bool insecure = 2;
+  }
+  message Metric {
+    bool enableExemplar = 1;
+  }
+  message Log {
+    string level = 1;
+  }
+  Trace trace = 1;
+  Metric metric = 2;
+  Log log = 3;
+}
+
+message Server {
+  message HTTP {
+    string network = 1;
+    string addr = 2;
+    google.protobuf.Duration timeout = 3;
+  }
+  message Websocket {
+    string network = 1;
+    string addr = 2;
+    google.protobuf.Duration timeout = 3;
+  }
+  message GRPC {
+    string network = 1;
+    string addr = 2;
+    google.protobuf.Duration timeout = 3;
+  }
+  message Prometheus {
+    bool enable = 1;
+    string network = 2;
+    string addr = 3;
+    string path = 4;
+  }
+  message Pprof {
+    bool enable = 1;
+    string network = 2;
+    string addr = 3;
+  }
+  message ThirdPartHook {
+    string network = 1;
+    string addr = 2;
+    google.protobuf.Duration timeout = 3;
+  }
+  HTTP http = 1;
+  GRPC grpc = 2;
+  Prometheus prometheus = 3;
+  Pprof pprof = 4;
+  Websocket websocket = 5;
+  ThirdPartHook thirdPartHook = 6;
+}
+
+message Data {
+  message Database {
+    string link = 1;
+    bool debug = 2;
+    uint32 maxIdleConns = 3;
+    uint32 maxOpenConns = 4;
+    google.protobuf.Duration maxLifetime = 5;
+    string prefix = 6;
+  }
+  message Redis {
+    string network = 1;
+    string addr = 2;
+    string password = 3;
+    uint32 db = 4;
+    google.protobuf.Duration readTimeout = 5;
+    google.protobuf.Duration writeTimeout = 6;
+    google.protobuf.Duration dialTimeout = 7;
+    uint32 minIdleConns = 8;
+  }
+  Database database = 1;
+  Redis redis = 2;
+}
+
+message EtcdRegistry {
+  // 是否开启
+  bool enabled = 1;
+  // ETCD 端点
+  repeated string endpoints = 2;
+}
+
+message ClientDiscovery {
+  message ETCD {
+    // ETCD 端点
+    repeated string endpoints = 1;
+    // 服务的 key
+    string key = 2;
+  }
+  // 服务发现的 ETCD 配置
+  ETCD etcd = 1;
+  // 直连场景下的配置（host:port）
+  string addr = 2;
+  // 客户端请求超时时间
+  google.protobuf.Duration timeout = 3;
+}
+
+message Middleware {
+  message JWT {
+    string authKeyName = 1;
+  }
+  JWT jwt = 1;
+}
+
+message NotifyConfig {
+  message Email {
+    string host = 1;
+    int32 port = 2;
+    string user = 3;
+    string password = 4;
+  }
+  message Aliyun {
+    string dxAccessId = 1;
+    string dxAccessSecret = 2;
+    string dxSignName = 3;
+    string dxTemplate = 4;
+    string dhAccessId = 5;
+    string dhAccessSecret = 6;
+    string dhTtsCode = 7;
+    string dhCalledShowNumber = 8;
+  }
+  message Txyun {
+    string dxAccessId = 1;
+    string dxAccessSecret = 2;
+    string dxSignName = 3;
+    string dxTemplate = 4;
+    string dxAppId = 5;
+    string dhAccessId = 6;
+    string dhAccessSecret = 7;
+    string dhTemplate = 8;
+    string dhAppId = 9;
+  }
+  message FsApp {
+    string appId = 1;
+    string appSecret = 2;
+  }
+  message DdApp {
+    string appId = 1;
+    string appSecret = 2;
+    string agentId = 3;
+  }
+  message WxApp {
+    int64 agentId = 1;
+    string agentSecret = 2;
+    string cropId = 3;
+  }
+
+  Email email = 1;
+  Aliyun aliyun = 2;
+  Txyun txyun = 3;
+  FsApp fsapp = 4;
+  DdApp ddapp = 5;
+  WxApp wxapp = 6;
+}
+
+
+message Hook {
+  message LarkCard {
+    string verificationToken = 1;
+    string encryptKey = 2;
+  }
+  LarkCard larkCard = 1;
+}

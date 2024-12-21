@@ -1,0 +1,122 @@
+syntax = "proto3";
+
+
+package ops.codo.notice.user.v1;
+
+option go_package = "codo-notice/pb/user";
+
+import "google/api/annotations.proto";
+import "google/protobuf/struct.proto";
+
+import "khttp/middleware.proto";
+
+
+service User {
+  rpc ListUser(ListUserRequest) returns (ListUserReply) {
+    option (google.api.http) = {
+      get: "/v1/user"
+    };
+    option (github.ccheers.pggh.khttp.middleware) = {
+      names: ["JWTMiddleware"]
+    };
+  };
+  rpc GetUser(GetUserRequest) returns (UserDTO) {
+    option (google.api.http) = {
+      get: "/v1/user/{id}"
+    };
+    option (github.ccheers.pggh.khttp.middleware) = {
+      names: ["JWTMiddleware"]
+    };
+  };
+}
+
+// User 用户信息
+message UserDTO {
+  // 用户ID，主键
+  uint32 id = 1;
+
+  // 创建时间
+  string created_at = 2;
+
+  // 更新时间
+  string updated_at = 3;
+
+  // 名称，最大长度128
+  string username = 4;
+
+  // 昵称，最大长度128
+  string nickname = 5;
+
+  // 用户标识，唯一且不为空，最大长度128
+  string user_id = 6;
+
+  // 部门标识，最大长度2048
+  string dep_id = 7;
+
+  // 部门名称，最大长度2048
+  string dep = 8;
+
+  // 管理者，最大长度128
+  string manager = 9;
+
+  // 头像URL，最大长度1024
+  string avatar = 10;
+
+  // 是否激活，默认为true
+  bool active = 11;
+
+  // 手机号码，最大长度32
+  string tel = 12;
+
+  // 邮箱地址，最大长度128
+  string email = 13;
+
+  // 源数据，用于存储额外的动态数据
+  google.protobuf.Struct data_source = 14;
+
+  // 是否禁用，默认为false
+  bool disable = 15;
+
+  // 钉钉ID，最大长度128
+  string dd_id = 16;
+
+  // 飞书ID，最大长度128
+  string fs_id = 17;
+}
+
+message GetUserRequest {
+  // 用户ID
+  uint32 id = 1;
+}
+
+message ListUserRequest {
+  // 每页条数
+  int32 page_size = 1;
+
+  // 第几页
+  int32 page_num = 2;
+
+  // 正序或倒序 ascend  descend
+  string order = 3;
+
+  // 全局搜索关键字
+  string search_text = 4;
+
+  // 搜索字段
+  string search_field = 5;
+
+  // 排序关键字
+  string field = 6;
+
+  // yes:缓存，no:不缓存
+  string cache = 7;
+
+  // 多字段搜索,精准匹配
+  google.protobuf.Struct filter_map = 8;
+}
+message ListUserReply {
+  // 用户列表
+  repeated UserDTO data = 1;
+  // 总数
+  int32 count = 2;
+}

@@ -1,0 +1,1304 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: ""
+    version: 0.0.1
+paths:
+    /healthz:
+        get:
+            tags:
+                - Healthy
+            description: 健康检查
+            operationId: Healthy_Healthy
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/HealthyReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/alert:
+        post:
+            tags:
+                - Templates
+            operationId: Templates_AlertTemplate
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/AlertTemplateRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/AlertTemplateReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/channel:
+        get:
+            tags:
+                - Channel
+            operationId: Channel_ListChannel
+            parameters:
+                - name: pageSize
+                  in: query
+                  description: 每页条数
+                  schema:
+                    type: integer
+                    format: int32
+                - name: pageNum
+                  in: query
+                  description: 第几页
+                  schema:
+                    type: integer
+                    format: int32
+                - name: order
+                  in: query
+                  description: 正序或倒序 ascend  descend
+                  schema:
+                    type: string
+                - name: searchText
+                  in: query
+                  description: 全局搜索关键字
+                  schema:
+                    type: string
+                - name: searchField
+                  in: query
+                  description: 搜索字段
+                  schema:
+                    type: string
+                - name: field
+                  in: query
+                  description: 排序关键字
+                  schema:
+                    type: string
+                - name: cache
+                  in: query
+                  description: yes:缓存，no:不缓存
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListChannelReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        put:
+            tags:
+                - Channel
+            operationId: Channel_UpdateChannel
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateChannelRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateChannelReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - Channel
+            operationId: Channel_CreateChannel
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateChannelRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ChannelDTO'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        delete:
+            tags:
+                - Channel
+            operationId: Channel_DeleteChannel
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/DeleteChannelRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DeleteChannelReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        patch:
+            tags:
+                - Channel
+            operationId: Channel_UpdateChannelBatch
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateChannelBatchRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateChannelBatchReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/channel/{id}:
+        get:
+            tags:
+                - Channel
+            operationId: Channel_GetChannel
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: uint32
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ChannelDTO'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/router:
+        get:
+            tags:
+                - Router
+            operationId: Router_ListRouter
+            parameters:
+                - name: pageSize
+                  in: query
+                  description: 每页条数
+                  schema:
+                    type: integer
+                    format: int32
+                - name: pageNum
+                  in: query
+                  description: 第几页
+                  schema:
+                    type: integer
+                    format: int32
+                - name: order
+                  in: query
+                  description: 正序或倒序 ascend  descend
+                  schema:
+                    type: string
+                - name: searchText
+                  in: query
+                  description: 全局搜索关键字
+                  schema:
+                    type: string
+                - name: searchField
+                  in: query
+                  description: 搜索字段
+                  schema:
+                    type: string
+                - name: field
+                  in: query
+                  description: 排序关键字
+                  schema:
+                    type: string
+                - name: cache
+                  in: query
+                  description: yes:缓存，no:不缓存
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListRouterReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        put:
+            tags:
+                - Router
+            operationId: Router_UpdateRouter
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateRouterRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateRouterReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - Router
+            operationId: Router_CreateRouter
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateRouterRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/RouterDTO'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        delete:
+            tags:
+                - Router
+            operationId: Router_DeleteRouter
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/DeleteRouterRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DeleteRouterReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        patch:
+            tags:
+                - Router
+            operationId: Router_UpdateRouterBatch
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateRouterBatchRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateRouterBatchReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/router-alert:
+        get:
+            tags:
+                - Router
+            operationId: Router_AlertRouterGET
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/AlertRouterReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - Router
+            operationId: Router_AlertRouterPOST
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/AlertRouterRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/AlertRouterReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/router/{id}:
+        get:
+            tags:
+                - Router
+            operationId: Router_GetRouter
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: uint32
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/RouterDTO'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/template:
+        get:
+            tags:
+                - Templates
+            operationId: Templates_ListTemplate
+            parameters:
+                - name: pageSize
+                  in: query
+                  description: 每页条数
+                  schema:
+                    type: integer
+                    format: int32
+                - name: pageNum
+                  in: query
+                  description: 第几页
+                  schema:
+                    type: integer
+                    format: int32
+                - name: order
+                  in: query
+                  description: 正序或倒序 ascend  descend
+                  schema:
+                    type: string
+                - name: searchText
+                  in: query
+                  description: 全局搜索关键字
+                  schema:
+                    type: string
+                - name: searchField
+                  in: query
+                  description: 搜索字段
+                  schema:
+                    type: string
+                - name: field
+                  in: query
+                  description: 排序关键字
+                  schema:
+                    type: string
+                - name: cache
+                  in: query
+                  description: yes:缓存，no:不缓存
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListTemplateReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        put:
+            tags:
+                - Templates
+            operationId: Templates_UpdateTemplate
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateTemplateRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateTemplateReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - Templates
+            operationId: Templates_CreateTemplate
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateTemplateRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/TemplateDTO'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        delete:
+            tags:
+                - Templates
+            operationId: Templates_DeleteTemplate
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/DeleteTemplateRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DeleteTemplateReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        patch:
+            tags:
+                - Templates
+            operationId: Templates_UpdateTemplateBatch
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateTemplateBatchRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateTemplateBatchReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/template/{id}:
+        get:
+            tags:
+                - Templates
+            operationId: Templates_GetTemplate
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: uint32
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/TemplateDTO'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/user:
+        get:
+            tags:
+                - User
+            operationId: User_ListUser
+            parameters:
+                - name: page_size
+                  in: query
+                  description: 每页条数
+                  schema:
+                    type: integer
+                    format: int32
+                - name: page_num
+                  in: query
+                  description: 第几页
+                  schema:
+                    type: integer
+                    format: int32
+                - name: order
+                  in: query
+                  description: 正序或倒序 ascend  descend
+                  schema:
+                    type: string
+                - name: search_text
+                  in: query
+                  description: 全局搜索关键字
+                  schema:
+                    type: string
+                - name: search_field
+                  in: query
+                  description: 搜索字段
+                  schema:
+                    type: string
+                - name: field
+                  in: query
+                  description: 排序关键字
+                  schema:
+                    type: string
+                - name: cache
+                  in: query
+                  description: yes:缓存，no:不缓存
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListUserReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/user/{id}:
+        get:
+            tags:
+                - User
+            operationId: User_GetUser
+            parameters:
+                - name: id
+                  in: path
+                  description: 用户ID
+                  required: true
+                  schema:
+                    type: integer
+                    format: uint32
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UserDTO'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+components:
+    schemas:
+        AlertRouterReply:
+            type: object
+            properties: {}
+        AlertRouterRequest:
+            type: object
+            properties: {}
+        AlertTemplateReply:
+            type: object
+            properties: {}
+        AlertTemplateRequest:
+            type: object
+            properties:
+                type:
+                    type: string
+                    description: 模板类型
+                use:
+                    type: string
+                    description: 模板用途
+                tpl:
+                    type: string
+                    description: 模板内容
+                url:
+                    type: string
+                    description: url/phone/email 多个以逗号分隔
+                phone:
+                    type: string
+                    description: 手机号 多个以逗号分隔
+                email:
+                    type: string
+                    description: 邮箱 多个以逗号分隔
+                secret:
+                    type: string
+                    description: 密钥
+                at:
+                    type: string
+                    description: '@对象 多个以逗号分隔 ldap的用户名 如：wuzi'
+        AlertWebhookDTO:
+            type: object
+            properties:
+                url:
+                    type: string
+                    description: URL
+                alias:
+                    type: string
+                    description: 别名
+                is_approve:
+                    type: boolean
+                    description: 同意 or 拒绝
+                is_reject:
+                    type: boolean
+        ChannelDTO:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: ID 主键
+                    format: uint32
+                created_at:
+                    type: string
+                    description: 创建时间
+                updated_at:
+                    type: string
+                    description: 更新时间
+                created_by:
+                    type: string
+                    description: 创建人
+                updated_by:
+                    type: string
+                    description: 更新人
+                name:
+                    type: string
+                    description: 通道名称，唯一，最大长度256
+                use:
+                    type: string
+                    description: 用途，不为空，默认值为"default"，最大长度45
+                user:
+                    type: array
+                    items:
+                        type: string
+                    description: 用户列表
+                group:
+                    type: array
+                    items:
+                        type: integer
+                        format: uint32
+                    description: 用户组ID列表
+                contact_points:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ContactPointDTO'
+                    description: 联系点列表
+                custom_items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ContactPointDTO'
+                    description: 自定义项列表
+                default_rule:
+                    type: object
+                    additionalProperties:
+                        type: string
+                    description: 字段重写规则，用于短信电话消息
+            description: Channel 模板定义
+        ContactPointDTO:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: ID 主键
+                    format: uint32
+                created_at:
+                    type: string
+                    description: 创建时间
+                updated_at:
+                    type: string
+                    description: 更新时间
+                type:
+                    type: string
+                    description: 类型，不为空，默认值为"default"，最大长度16
+                channel_id:
+                    type: integer
+                    description: 通道ID
+                    format: uint32
+                tpl_id:
+                    type: integer
+                    description: 模板ID
+                    format: uint32
+                webhook:
+                    type: string
+                    description: 地址，最大长度1024
+                secret:
+                    type: string
+                    description: 密钥，最大长度1024
+                severity:
+                    type: array
+                    items:
+                        type: string
+                    description: 等级列表
+                severity_desc:
+                    type: string
+                    description: 等级描述，最大长度1024
+                show:
+                    type: string
+                    description: 是否显示，可选值："yes"/"no"，默认值为"no"，最大长度16
+                fixed:
+                    type: string
+                    description: 是否固定，可选值："yes"/"no"，默认值为"yes"，最大长度16
+                alert_webhooks:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/AlertWebhookDTO'
+                    description: 通知回调
+            description: ContactPoint 联系点定义
+        CreateChannelRequest:
+            type: object
+            properties:
+                name:
+                    type: string
+                use:
+                    type: string
+                user:
+                    type: array
+                    items:
+                        type: string
+                contact_points:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ContactPointDTO'
+                custom_items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ContactPointDTO'
+        CreateRouterRequest:
+            type: object
+            properties:
+                name:
+                    type: string
+                    description: 路由名称，唯一，最大长度256
+                description:
+                    type: string
+                    description: 路由描述，最大长度1024
+                status:
+                    type: string
+                    description: 是否激活，可选值："yes"/"no"，默认值为"yes"，最大长度16
+                channel_id:
+                    type: integer
+                    description: 通道ID，默认值为0
+                    format: uint32
+                condition_list:
+                    allOf:
+                        - $ref: '#/components/schemas/ListValue'
+                    description: 触发条件，二维数组形式
+        CreateTemplateRequest:
+            type: object
+            properties:
+                name:
+                    type: string
+                type:
+                    type: string
+                use:
+                    type: string
+                content:
+                    type: string
+        DeleteChannelReply:
+            type: object
+            properties: {}
+        DeleteChannelRequest:
+            type: object
+            properties:
+                ids:
+                    type: array
+                    items:
+                        type: integer
+                        format: uint32
+        DeleteRouterReply:
+            type: object
+            properties: {}
+        DeleteRouterRequest:
+            type: object
+            properties:
+                ids:
+                    type: array
+                    items:
+                        type: integer
+                        format: uint32
+        DeleteTemplateReply:
+            type: object
+            properties: {}
+        DeleteTemplateRequest:
+            type: object
+            properties:
+                ids:
+                    type: array
+                    items:
+                        type: integer
+                        format: uint32
+        GoogleProtobufAny:
+            type: object
+            properties:
+                '@type':
+                    type: string
+                    description: The type of the serialized message.
+            additionalProperties: true
+            description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+        GoogleProtobufValue:
+            description: Represents a dynamically typed value which can be either null, a number, a string, a boolean, a recursive struct value, or a list of values.
+        HealthyReply:
+            type: object
+            properties:
+                mysql:
+                    type: string
+                    description: 数据库状态 正常会返回 ok
+                redis:
+                    type: string
+                    description: redis状态 正常会返回 ok
+        ListChannelReply:
+            type: object
+            properties:
+                data:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ChannelDTO'
+                    description: 列表
+                count:
+                    type: integer
+                    description: 总数
+                    format: int32
+        ListRouterReply:
+            type: object
+            properties:
+                data:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/RouterDTO'
+                    description: 列表
+                count:
+                    type: integer
+                    description: 总数
+                    format: int32
+        ListTemplateReply:
+            type: object
+            properties:
+                data:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/TemplateDTO'
+                    description: 列表
+                count:
+                    type: integer
+                    description: 总数
+                    format: int32
+        ListUserReply:
+            type: object
+            properties:
+                data:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/UserDTO'
+                    description: 用户列表
+                count:
+                    type: integer
+                    description: 总数
+                    format: int32
+        ListValue:
+            type: object
+            properties:
+                values:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/GoogleProtobufValue'
+                    description: Repeated field of dynamically typed values.
+            description: |-
+                `ListValue` is a wrapper around a repeated field of values.
+
+                 The JSON representation for `ListValue` is JSON array.
+        RouterDTO:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: ID 主键
+                    format: uint32
+                created_at:
+                    type: string
+                    description: 创建时间
+                updated_at:
+                    type: string
+                    description: 更新时间
+                created_by:
+                    type: string
+                    description: 创建人
+                updated_by:
+                    type: string
+                    description: 更新人
+                name:
+                    type: string
+                    description: 路由名称，唯一，最大长度256
+                description:
+                    type: string
+                    description: 路由描述，最大长度1024
+                status:
+                    type: string
+                    description: 是否激活，可选值："yes"/"no"，默认值为"yes"，最大长度16
+                channel_id:
+                    type: integer
+                    description: 通道ID，默认值为0
+                    format: uint32
+                condition_list:
+                    allOf:
+                        - $ref: '#/components/schemas/ListValue'
+                    description: 触发条件，二维数组形式
+            description: Router 路由定义
+        Status:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    description: The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code].
+                    format: int32
+                message:
+                    type: string
+                    description: A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client.
+                details:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/GoogleProtobufAny'
+                    description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
+            description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
+        TemplateDTO:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: ID 主键
+                    format: uint32
+                created_at:
+                    type: string
+                    description: 创建时间
+                updated_at:
+                    type: string
+                    description: 更新时间
+                created_by:
+                    type: string
+                    description: 创建人
+                updated_by:
+                    type: string
+                    description: 更新人
+                name:
+                    type: string
+                    description: 模板名称，唯一且不为空，最大长度256
+                content:
+                    type: string
+                    description: 模板内容
+                type:
+                    type: string
+                    description: 模板类型，不为空，默认值为"default"，最大长度16
+                use:
+                    type: string
+                    description: 模板用途，不为空，默认值为"default"，最大长度45
+                default:
+                    type: string
+                    description: 是否为默认模板，可选值："yes"/"no"，默认值为"no"，最大长度16
+                path:
+                    type: string
+                    description: path 路径信息
+            description: Template 模板定义
+        UpdateChannelBatchReply:
+            type: object
+            properties: {}
+        UpdateChannelBatchRequest:
+            type: object
+            properties:
+                ids:
+                    type: array
+                    items:
+                        type: integer
+                        format: uint32
+                name:
+                    type: string
+                use:
+                    type: string
+                user:
+                    type: array
+                    items:
+                        type: string
+                contact_points:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ContactPointDTO'
+                custom_items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ContactPointDTO'
+        UpdateChannelReply:
+            type: object
+            properties: {}
+        UpdateChannelRequest:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: uint32
+                name:
+                    type: string
+                use:
+                    type: string
+                user:
+                    type: array
+                    items:
+                        type: string
+                contact_points:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ContactPointDTO'
+                custom_items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ContactPointDTO'
+        UpdateRouterBatchReply:
+            type: object
+            properties: {}
+        UpdateRouterBatchRequest:
+            type: object
+            properties:
+                ids:
+                    type: array
+                    items:
+                        type: integer
+                        format: uint32
+                name:
+                    type: string
+                    description: 路由名称，唯一，最大长度256
+                description:
+                    type: string
+                    description: 路由描述，最大长度1024
+                status:
+                    type: string
+                    description: 是否激活，可选值："yes"/"no"，默认值为"yes"，最大长度16
+                channel_id:
+                    type: integer
+                    description: 通道ID，默认值为0
+                    format: uint32
+                condition_list:
+                    allOf:
+                        - $ref: '#/components/schemas/ListValue'
+                    description: 触发条件，二维数组形式
+        UpdateRouterReply:
+            type: object
+            properties: {}
+        UpdateRouterRequest:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: uint32
+                name:
+                    type: string
+                    description: 路由名称，唯一，最大长度256
+                description:
+                    type: string
+                    description: 路由描述，最大长度1024
+                status:
+                    type: string
+                    description: 是否激活，可选值："yes"/"no"，默认值为"yes"，最大长度16
+                channel_id:
+                    type: integer
+                    description: 通道ID，默认值为0
+                    format: uint32
+                condition_list:
+                    allOf:
+                        - $ref: '#/components/schemas/ListValue'
+                    description: 触发条件，二维数组形式
+        UpdateTemplateBatchReply:
+            type: object
+            properties: {}
+        UpdateTemplateBatchRequest:
+            type: object
+            properties:
+                ids:
+                    type: array
+                    items:
+                        type: integer
+                        format: uint32
+                name:
+                    type: string
+                type:
+                    type: string
+                use:
+                    type: string
+                content:
+                    type: string
+        UpdateTemplateReply:
+            type: object
+            properties: {}
+        UpdateTemplateRequest:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: uint32
+                name:
+                    type: string
+                type:
+                    type: string
+                use:
+                    type: string
+                content:
+                    type: string
+        UserDTO:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: 用户ID，主键
+                    format: uint32
+                created_at:
+                    type: string
+                    description: 创建时间
+                updated_at:
+                    type: string
+                    description: 更新时间
+                username:
+                    type: string
+                    description: 名称，最大长度128
+                nickname:
+                    type: string
+                    description: 昵称，最大长度128
+                user_id:
+                    type: string
+                    description: 用户标识，唯一且不为空，最大长度128
+                dep_id:
+                    type: string
+                    description: 部门标识，最大长度2048
+                dep:
+                    type: string
+                    description: 部门名称，最大长度2048
+                manager:
+                    type: string
+                    description: 管理者，最大长度128
+                avatar:
+                    type: string
+                    description: 头像URL，最大长度1024
+                active:
+                    type: boolean
+                    description: 是否激活，默认为true
+                tel:
+                    type: string
+                    description: 手机号码，最大长度32
+                email:
+                    type: string
+                    description: 邮箱地址，最大长度128
+                data_source:
+                    type: object
+                    description: 源数据，用于存储额外的动态数据
+                disable:
+                    type: boolean
+                    description: 是否禁用，默认为false
+                dd_id:
+                    type: string
+                    description: 钉钉ID，最大长度128
+                fs_id:
+                    type: string
+                    description: 飞书ID，最大长度128
+            description: User 用户信息
+tags:
+    - name: Channel
+    - name: Healthy
+    - name: Router
+    - name: Templates
+    - name: User

@@ -1,0 +1,596 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "pb/channel/channel.v1.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "Channel"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/channel": {
+      "get": {
+        "operationId": "Channel_ListChannel",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListChannelReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pageSize",
+            "description": "每页条数",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageNum",
+            "description": "第几页",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "order",
+            "description": "正序或倒序 ascend  descend",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "searchText",
+            "description": "全局搜索关键字",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "searchField",
+            "description": "搜索字段",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "field",
+            "description": "排序关键字",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "cache",
+            "description": "yes:缓存，no:不缓存",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "filter_map",
+            "description": "多字段搜索,精准匹配",
+            "in": "query",
+            "required": false,
+            "type": "object"
+          }
+        ],
+        "tags": [
+          "Channel"
+        ]
+      },
+      "delete": {
+        "operationId": "Channel_DeleteChannel",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DeleteChannelReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1DeleteChannelRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Channel"
+        ]
+      },
+      "post": {
+        "operationId": "Channel_CreateChannel",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ChannelDTO"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateChannelRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Channel"
+        ]
+      },
+      "put": {
+        "operationId": "Channel_UpdateChannel",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateChannelReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1UpdateChannelRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Channel"
+        ]
+      },
+      "patch": {
+        "operationId": "Channel_UpdateChannelBatch",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateChannelBatchReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1UpdateChannelBatchRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Channel"
+        ]
+      }
+    },
+    "/v1/channel/{id}": {
+      "get": {
+        "operationId": "Channel_GetChannel",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ChannelDTO"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "Channel"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "protobufNullValue": {
+      "type": "integer",
+      "format": "int32",
+      "enum": [
+        0
+      ],
+      "default": 0,
+      "description": "`NullValue` is a singleton enumeration to represent the null value for the\n`Value` type union.\n\n The JSON representation for `NullValue` is JSON `null`.\n\n - 0: Null value."
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1AlertWebhookDTO": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "title": "URL"
+        },
+        "alias": {
+          "type": "string",
+          "title": "别名"
+        },
+        "is_approve": {
+          "type": "boolean",
+          "title": "同意 or 拒绝"
+        },
+        "is_reject": {
+          "type": "boolean"
+        }
+      }
+    },
+    "v1ChannelDTO": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "title": "ID 主键"
+        },
+        "created_at": {
+          "type": "string",
+          "title": "创建时间"
+        },
+        "updated_at": {
+          "type": "string",
+          "title": "更新时间"
+        },
+        "created_by": {
+          "type": "string",
+          "title": "创建人"
+        },
+        "updated_by": {
+          "type": "string",
+          "title": "更新人"
+        },
+        "name": {
+          "type": "string",
+          "title": "通道名称，唯一，最大长度256"
+        },
+        "use": {
+          "type": "string",
+          "title": "用途，不为空，默认值为\"default\"，最大长度45"
+        },
+        "user": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "用户列表"
+        },
+        "group": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "title": "用户组ID列表"
+        },
+        "contact_points": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1ContactPointDTO"
+          },
+          "title": "联系点列表"
+        },
+        "custom_items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1ContactPointDTO"
+          },
+          "title": "自定义项列表"
+        },
+        "default_rule": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "字段重写规则，用于短信电话消息"
+        }
+      },
+      "title": "Channel 模板定义"
+    },
+    "v1ContactPointDTO": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "title": "ID 主键"
+        },
+        "created_at": {
+          "type": "string",
+          "title": "创建时间"
+        },
+        "updated_at": {
+          "type": "string",
+          "title": "更新时间"
+        },
+        "type": {
+          "type": "string",
+          "title": "类型，不为空，默认值为\"default\"，最大长度16"
+        },
+        "channel_id": {
+          "type": "integer",
+          "format": "int64",
+          "title": "通道ID"
+        },
+        "tpl_id": {
+          "type": "integer",
+          "format": "int64",
+          "title": "模板ID"
+        },
+        "webhook": {
+          "type": "string",
+          "title": "地址，最大长度1024"
+        },
+        "secret": {
+          "type": "string",
+          "title": "密钥，最大长度1024"
+        },
+        "severity": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "等级列表"
+        },
+        "severity_desc": {
+          "type": "string",
+          "title": "等级描述，最大长度1024"
+        },
+        "show": {
+          "type": "string",
+          "title": "是否显示，可选值：\"yes\"/\"no\"，默认值为\"no\"，最大长度16"
+        },
+        "fixed": {
+          "type": "string",
+          "title": "是否固定，可选值：\"yes\"/\"no\"，默认值为\"yes\"，最大长度16"
+        },
+        "alert_webhooks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1AlertWebhookDTO"
+          },
+          "title": "通知回调"
+        }
+      },
+      "title": "ContactPoint 联系点定义"
+    },
+    "v1CreateChannelRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "use": {
+          "type": "string"
+        },
+        "user": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "contact_points": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1ContactPointDTO"
+          }
+        },
+        "custom_items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1ContactPointDTO"
+          }
+        }
+      }
+    },
+    "v1DeleteChannelReply": {
+      "type": "object"
+    },
+    "v1DeleteChannelRequest": {
+      "type": "object",
+      "properties": {
+        "ids": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      }
+    },
+    "v1ListChannelReply": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1ChannelDTO"
+          },
+          "title": "列表"
+        },
+        "count": {
+          "type": "integer",
+          "format": "int32",
+          "title": "总数"
+        }
+      }
+    },
+    "v1UpdateChannelBatchReply": {
+      "type": "object"
+    },
+    "v1UpdateChannelBatchRequest": {
+      "type": "object",
+      "properties": {
+        "ids": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "name": {
+          "type": "string"
+        },
+        "use": {
+          "type": "string"
+        },
+        "user": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "contact_points": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1ContactPointDTO"
+          }
+        },
+        "custom_items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1ContactPointDTO"
+          }
+        }
+      }
+    },
+    "v1UpdateChannelReply": {
+      "type": "object"
+    },
+    "v1UpdateChannelRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "use": {
+          "type": "string"
+        },
+        "user": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "contact_points": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1ContactPointDTO"
+          }
+        },
+        "custom_items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1ContactPointDTO"
+          }
+        }
+      }
+    }
+  }
+}
