@@ -195,16 +195,16 @@ func getTitleColor(content string, ac biz.AlertContext) string {
 	if ac.Status.IsResolved() {
 		return "green"
 	}
-	if ac.Status != biz.AlertStatusFiring {
-		text := content
-		if strings.Count(text, "resolved") > 0 && strings.Count(text, "firing") > 0 {
-			return "orange"
-		} else if strings.Count(text, "resolved") > 0 {
-			return "green"
-		} else {
-			return "red"
-		}
+	if ac.Status.IsResolving() {
+		return "orange"
 	}
+	// 其他为止状态的情况
+	if !ac.Status.IsFiring() {
+		return "red"
+	}
+
+	// 所有特殊情况处理完后, 这里只会是 firing
+	// 进行告警级别的颜色区分
 	switch ac.Severity {
 	case biz.AlertSeverityWarn, biz.AlertSeverityInfo:
 		return "orange"

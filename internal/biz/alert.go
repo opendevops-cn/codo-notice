@@ -20,14 +20,14 @@ var ErrNoRouterMatch = fmt.Errorf("no routers was matched")
 
 // 相关保留字段
 const (
-	FieldsMessage     = "message"      // 通用消息字段
-	FieldsManager     = "codo_manager" // 业务负责人
-	FieldsNoticer     = "codo_noticer" // 内置通知人
-	FieldsSeverity    = "severity"     // 告警等级
-	FieldsTitle       = "title"        // 告警标题
-	FieldsNativeTitle = "codo_title"   // 原生标题 不做其他处理
-	FieldsStatus      = "status"       // 告警状态 resolved firing padding
-	FieldsAppCn       = "cmdb_bizcn"   // 业务中文描述
+	FieldsMessage     = "message"      // 通用消息字段 (从 jsonBody 取值)
+	FieldsManager     = "codo_manager" // 业务负责人 (从 httpQuery + jsonBody 取值)
+	FieldsNoticer     = "codo_noticer" // 内置通知人 (从 httpQuery + jsonBody 取值)
+	FieldsSeverity    = "severity"     // 告警等级 [fatal | error | warn | info] (从 httpQuery + jsonBody 取值)
+	FieldsTitle       = "title"        // 告警标题 (从 httpQuery + jsonBody 取值)
+	FieldsNativeTitle = "codo_title"   // 原生标题 不做其他处理 (从 httpQuery + jsonBody 取值)
+	FieldsStatus      = "status"       // 告警状态 [resolved | firing | padding] (从 httpQuery + jsonBody 取值)
+	FieldsAppCn       = "cmdb_bizcn"   // 业务中文描述 (从 httpQuery + jsonBody 取值)
 )
 
 type AlertInfo struct {
@@ -76,10 +76,20 @@ const (
 	AlertStatusFiring = AlertStatus("firing")
 	// AlertStatusInactive 告警失效
 	AlertStatusInactive = AlertStatus("inactive")
+	// AlertStatusResolving 告警恢复中
+	AlertStatusResolving = AlertStatus("resolving")
 )
 
 func (x AlertStatus) IsResolved() bool {
-	return x == AlertStatusResolved || x == AlertStatusInactive
+	return x == AlertStatusResolved
+}
+
+func (x AlertStatus) IsResolving() bool {
+	return x == AlertStatusResolving
+}
+
+func (x AlertStatus) IsFiring() bool {
+	return x == AlertStatusFiring
 }
 
 type AlertSeverity string
@@ -546,6 +556,16 @@ func (x *AlertUseCase) buildAlertContext(ctx context.Context, info *AlertInfo) (
 		return nil, err
 	}
 
+	// 构造 managers
+	noticers, err := x.buildNoticers(ctx, labels, rawData)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(noticers) == 0 {
+		noticers = info.CCUsers
+	}
+
 	// 构造 notify data
 	notifyData, err := x.buildAlertNotifyData(ctx, info)
 	if err != nil {
@@ -553,14 +573,14 @@ func (x *AlertUseCase) buildAlertContext(ctx context.Context, info *AlertInfo) (
 	}
 
 	return &AlertContext{
-		Status:          AlertStatus(labels[FieldsStatus]),
+		Status:          x.getStatus(labels),
 		Severity:        x.getSeverity(labels),
 		Title:           x.getTitle(labels),
 		Message:         data[FieldsMessage],
 		Args:            data,
 		TrigUser:        trigUsr,
 		Entrance:        info.Entrance,
-		CC:              info.CCUsers,
+		CC:              noticers,
 		Manager:         managers,
 		AlertWebhooks:   info.AlertWebhooks,
 		Template:        info.Template,
@@ -610,6 +630,26 @@ func (x *AlertUseCase) getTitle(labels map[string]string) string {
 	return title
 }
 
+// getStatus 获取状态
+func (x *AlertUseCase) getStatus(labels map[string]string) AlertStatus {
+	if v, ok := labels[FieldsStatus]; ok {
+		return AlertStatus(v)
+	}
+	text := labels[FieldsMessage]
+	firingCnt := strings.Count(text, "firing")
+	resolvedCnt := strings.Count(text, "resolved")
+	if firingCnt > 0 && resolvedCnt > 0 {
+		return AlertStatusResolving
+	}
+	if firingCnt > 0 {
+		return AlertStatusFiring
+	}
+	if resolvedCnt > 0 {
+		return AlertStatusResolved
+	}
+	return AlertStatusFiring
+}
+
 func (x *AlertUseCase) buildManagers(ctx context.Context, labels map[string]string, data map[string]interface{}) ([]*User, error) {
 	tag := FieldsManager
 	delimiter := ","
@@ -650,6 +690,48 @@ func (x *AlertUseCase) buildManagers(ctx context.Context, labels map[string]stri
 		return nil, err
 	}
 	return managers, nil
+}
+
+func (x *AlertUseCase) buildNoticers(ctx context.Context, labels map[string]string, data map[string]interface{}) ([]*User, error) {
+	tag := FieldsNoticer
+	delimiter := ","
+	// from query
+	result := make([]string, 0)
+	if v, ok := labels[tag]; ok {
+		// 逗号分隔
+		result = append(result, strings.Split(v, delimiter)...)
+	}
+	// from body
+	if v, ok := data[tag]; ok {
+		if val, ok := v.(string); ok {
+			result = append(result, strings.Split(val, delimiter)...)
+		} else if val, ok := v.([]string); ok {
+			result = append(result, val...)
+		}
+	}
+
+	result = arrayx.UniqArray(arrayx.Filter(arrayx.Map(result, func(t string) string {
+		return strings.TrimSpace(t)
+	}), func(s string) bool {
+		return s != ""
+	}))
+	if len(result) == 0 {
+		return nil, nil
+	}
+
+	users, _, err := x.userUC.List(ctx, UserQuery{
+		ListAll:  false,
+		PageSize: 999,
+		PageNum:  1,
+		FilterMap: map[string]interface{}{
+			"username": result,
+			"disable":  false,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
 }
 
 func (x *AlertUseCase) buildAlertNotifyData(ctx context.Context, info *AlertInfo) (*AlertNotifyData, error) {
