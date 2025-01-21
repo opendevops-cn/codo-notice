@@ -39,7 +39,11 @@ func (x *TencentCloudDHAlerter) Alert(ctx context.Context, ac biz.AlertContext) 
 	var errs []error
 	for _, usr := range ac.CC {
 		number := usr.Tel
-		client, _ := vms.NewClient(credential, "ap-guangzhou", cpf)
+		client, err := vms.NewClient(credential, cfg.RegionID, cpf)
+		if err != nil {
+			errs = append(errs, fmt.Errorf("[TencentCloudDHAlerter][Alert][NewClient] phone=%s, err=%s", number, err.Error()))
+			continue
+		}
 		request := vms.NewSendTtsVoiceRequest()
 		request.TemplateId = common.StringPtr(cfg.Template)
 		request.TemplateParamSet = common.StringPtrs([]string{content})
@@ -47,7 +51,7 @@ func (x *TencentCloudDHAlerter) Alert(ctx context.Context, ac biz.AlertContext) 
 		request.VoiceSdkAppid = common.StringPtr(cfg.AppId)
 		request.PlayTimes = common.Uint64Ptr(2)
 		// send
-		_, err := client.SendTtsVoice(request)
+		_, err = client.SendTtsVoice(request)
 		if err != nil {
 			errs = append(errs, fmt.Errorf("[TencentCloudDHAlerter][Alert][SendTtsVoice] phone=%s, err=%s", number, err.Error()))
 			continue

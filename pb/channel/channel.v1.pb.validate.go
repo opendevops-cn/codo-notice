@@ -1378,9 +1378,7 @@ func (m *AlertWebhookDTO) validate(all bool) error {
 
 	// no validation rules for Alias
 
-	// no validation rules for IsApprove
-
-	// no validation rules for IsReject
+	// no validation rules for Mode
 
 	if len(errors) > 0 {
 		return AlertWebhookDTOMultiError(errors)

@@ -9,7 +9,6 @@ import (
 
 	"github.com/ccheers/xpkg/generic/arrayx"
 	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 )
 
 type UserRepo struct {
@@ -55,22 +54,32 @@ func (x *UserRepo) Count(ctx context.Context, query biz.UserQuery) (uint32, erro
 	return uint32(count), nil
 }
 
-func (x *UserRepo) Get(ctx context.Context, id uint32) (*biz.User, error) {
+func (x *UserRepo) Get(ctx context.Context, userID string) (*biz.User, error) {
 	result := new(models.User)
-	if err := x.db.DBWithContext(ctx).Model(&models.User{}).Where("id = ?", id).First(result).Error; err != nil {
-		return nil, fmt.Errorf("%w: get user by id error[id=%d]", err, id)
+	if err := x.db.DBWithContext(ctx).Model(&models.User{}).Where("user_id = ?", userID).First(result).Error; err != nil {
+		return nil, fmt.Errorf("%w: get user by id error, userID=%s", err, userID)
 	}
 	return x.convertDO(result), nil
 }
 
 func (x *UserRepo) Save(ctx context.Context, user *biz.User) error {
 	data := x.convertVO(user)
-
-	if err := x.db.DBWithContext(ctx).Model(&models.User{}).
-		Clauses(clause.OnConflict{
-			UpdateAll: true,
-		}).
-		Create(data).Error; err != nil {
+	var dst models.User
+	result := x.db.DBWithContext(ctx).Model(&models.User{}).
+		Where("user_id = ?", user.UserId).
+		Attrs(data).
+		FirstOrCreate(&dst)
+	err := result.Error
+	if err != nil {
+		return fmt.Errorf("%w: save user error", err)
+	}
+	if result.RowsAffected == 1 {
+		return nil
+	}
+	data.ID = dst.ID
+	data.CreatedAt = dst.CreatedAt
+	err = x.db.DBWithContext(ctx).Model(&models.User{}).Where("id = ?", dst.ID).Save(data).Error
+	if err != nil {
 		return fmt.Errorf("%w: save user error", err)
 	}
 	return nil
@@ -91,10 +100,7 @@ func (x *UserRepo) convertQuery(db *gorm.DB, query biz.UserQuery) (*gorm.DB, err
 		Cache:       query.Cache,
 		FilterMap:   query.FilterMap,
 	}
-	condition, err := reqTable.convertQuery(new(models.User), []string{"data_source"}, map[string]string{
-		"username": "name",
-		"nickname": "nick",
-	})
+	condition, err := reqTable.convertQuery(new(models.User), []string{"data_source"}, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -124,6 +130,7 @@ func (x *UserRepo) convertVO(user *biz.User) *models.User {
 		Disable:    user.Disable,
 		DdID:       user.DdId,
 		FsID:       user.FsId,
+		WxID:       user.WxId,
 	}
 	data.ID = uint(user.ID)
 
@@ -149,5 +156,6 @@ func (x *UserRepo) convertDO(user *models.User) *biz.User {
 		Disable:    user.Disable,
 		DdId:       user.DdID,
 		FsId:       user.FsID,
+		WxId:       user.WxID,
 	}
 }

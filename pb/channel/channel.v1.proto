@@ -134,13 +134,20 @@ message ListChannelReply {
 }
 
 message AlertWebhookDTO {
+  enum  AlertCallbackMode {
+    // AlertCallbackModeNone 无情景
+    AlertCallbackModeNone = 0;
+    // AlertCallbackModeIsApprove 强调同意
+    AlertCallbackModeIsApprove = 1;
+    // AlertCallbackModeIsReject 强调拒绝
+    AlertCallbackModeIsReject = 2;
+  }
   // URL
   string url = 1;
   // 别名
   string alias = 2;
-  // 同意 or 拒绝
-  bool is_approve = 3;
-  bool is_reject = 4;
+  // 情景模式
+  AlertCallbackMode mode = 3;
 }
 
 // ContactPoint 联系点定义

@@ -35,6 +35,9 @@ func (x *AliyunDianhuaAlerter) Alert(ctx context.Context, ac biz.AlertContext) e
 	for _, user := range ac.CC {
 		number := user.Tel
 		client, err := dyvmsapi.NewClientWithAccessKey("cn-hangzhou", dhCfg.AccessId, dhCfg.AccessSecret)
+		if err != nil {
+			errs = append(errs, fmt.Errorf("[AliyunDianhuaAlerter][Alert] phone=%s, access_id=%s, err=%w", number, dhCfg.AccessId, err))
+		}
 		request := dyvmsapi.CreateSingleCallByTtsRequest()
 		request.Scheme = "https"
 		request.CalledNumber = number

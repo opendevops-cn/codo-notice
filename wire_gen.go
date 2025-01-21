@@ -40,16 +40,21 @@ func wireApp(contextContext context.Context, loggerLogger logger.Logger, bootstr
 	if err != nil {
 		return nil, nil, err
 	}
-	db, cleanup, err := dep.NewMysql(bootstrap, logLogger, tracerProvider)
+	db, cleanup, err := dep.NewMysql(contextContext, bootstrap, logLogger, tracerProvider, meterProvider)
 	if err != nil {
 		return nil, nil, err
 	}
-	client, cleanup2, err := dep.NewRedis(contextContext, logLogger, bootstrap, tracerProvider)
+	gormDB, err := dep.NewGORM(bootstrap, db)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	dataData, err := data.NewData(db, client)
+	client, cleanup2, err := dep.NewRedis(contextContext, loggerLogger, bootstrap, tracerProvider, meterProvider)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	dataData, err := data.NewData(gormDB, client)
 	if err != nil {
 		cleanup2()
 		cleanup()
@@ -104,8 +109,9 @@ func wireApp(contextContext context.Context, loggerLogger logger.Logger, bootstr
 	routerService := service.NewRouterService(iRouterUseCase, iAlertUseCase, iUserUseCase)
 	templateService := service.NewTemplateService(iTemplateUseCase, iUserUseCase, iAlertUseCase)
 	userService := service.NewUserService(iUserUseCase)
+	healthyService := service.NewHealthyService(db, client)
 	jwtMiddleware := imiddleware.NewJWTMiddleware(bootstrap)
-	httpServer, err := server.NewHTTPServer(bootstrap, logLogger, meterProvider, tracerProvider, channelService, routerService, templateService, userService, jwtMiddleware)
+	httpServer, err := server.NewHTTPServer(bootstrap, logLogger, meterProvider, tracerProvider, channelService, routerService, templateService, userService, healthyService, jwtMiddleware)
 	if err != nil {
 		cleanup5()
 		cleanup4()

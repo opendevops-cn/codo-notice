@@ -86,7 +86,7 @@ message UserDTO {
 
 message GetUserRequest {
   // 用户ID
-  uint32 id = 1;
+  string id = 1;
 }
 
 message ListUserRequest {

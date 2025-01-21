@@ -121,8 +121,7 @@
             "description": "用户ID",
             "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int64"
+            "type": "string"
           }
         ],
         "tags": [
@@ -142,13 +141,12 @@
       "additionalProperties": {}
     },
     "protobufNullValue": {
-      "type": "integer",
-      "format": "int32",
+      "type": "string",
       "enum": [
-        0
+        "NULL_VALUE"
       ],
-      "default": 0,
-      "description": "`NullValue` is a singleton enumeration to represent the null value for the\n`Value` type union.\n\n The JSON representation for `NullValue` is JSON `null`.\n\n - 0: Null value."
+      "default": "NULL_VALUE",
+      "description": "`NullValue` is a singleton enumeration to represent the null value for the\n`Value` type union.\n\n The JSON representation for `NullValue` is JSON `null`.\n\n - NULL_VALUE: Null value."
     },
     "rpcStatus": {
       "type": "object",

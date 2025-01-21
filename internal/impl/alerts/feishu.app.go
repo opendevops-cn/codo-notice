@@ -247,10 +247,10 @@ func (x *FeishuAppAlerter) buildCardJSON(ctx context.Context, ac biz.AlertContex
 			//	primary：强调样式
 			//	danger：警示样式
 			btnType := larkcard.MessageCardButtonTypeDefault
-			if webhook.IsApprove {
+			if webhook.AlertCallbackMode.IsApprove() {
 				btnType = larkcard.MessageCardButtonTypePrimary
 			}
-			if webhook.IsReject {
+			if webhook.AlertCallbackMode.IsReject() {
 				btnType = larkcard.MessageCardButtonTypeDanger
 			}
 			cardCallbackActions = append(cardCallbackActions,
@@ -258,8 +258,9 @@ func (x *FeishuAppAlerter) buildCardJSON(ctx context.Context, ac biz.AlertContex
 					Type(btnType).
 					Text(larkcard.NewMessageCardLarkMd().Content(webhook.Alias).Build()).
 					Value(map[string]interface{}{
-						"uuid":   webhookUUID,
-						"app_id": cfg.AppID,
+						"uuid":          webhookUUID,
+						"callback_args": ac.WebhookCallbackArgs,
+						"app_id":        cfg.AppID,
 					}).
 					Build(),
 			)
@@ -346,6 +347,8 @@ func (x *FeishuAppAlerter) listenLarkCard(ctx context.Context) error {
 				return nil
 			}
 
+			callbackArgs, _ := dst.Action.Value["callback_args"].(string)
+
 			// todo 这里拿 client 有问题 后续逻辑应该是:
 			// 1. 用户在后台配置飞书账号
 			// 2. 持续同步飞书账号, 加载账号配置成 client
@@ -381,7 +384,8 @@ func (x *FeishuAppAlerter) listenLarkCard(ctx context.Context) error {
 				userEmail = *usrInfo.Data.User.EnterpriseEmail
 			}
 			bs, _ := json.Marshal(biz.WebhookRequest{
-				UserEmail: userEmail,
+				UserEmail:    userEmail,
+				CallbackArgs: callbackArgs,
 			})
 
 			req, err := http.NewRequest(http.MethodPost, webHookInfo.Webhook.URL, bytes.NewReader(bs))

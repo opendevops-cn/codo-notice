@@ -35,7 +35,10 @@ func (x *TencentCloudDXAlerter) Alert(ctx context.Context, ac biz.AlertContext) 
 		cfg.AccessSecret,
 	)
 	cpf := profile.NewClientProfile()
-	client, _ := sms.NewClient(credential, "ap-guangzhou", cpf)
+	client, err := sms.NewClient(credential, cfg.RegionID, cpf)
+	if err != nil {
+		return fmt.Errorf("[TencentCloudDXAlerter][Alert][NewClient] err=%w", err)
+	}
 	request := sms.NewSendSmsRequest()
 	request.SmsSdkAppId = common.StringPtr(cfg.AppId)
 	request.SignName = common.StringPtr(cfg.SignName)

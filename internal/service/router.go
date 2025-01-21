@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"encoding/json"
-	"strconv"
 	"time"
 
 	"codo-notice/internal/biz"
@@ -169,10 +168,9 @@ func (x *RouterService) alertRouter(ctx context.Context, _ *routerpb.AlertRouter
 	if err != nil {
 		return nil, cerr.New(cerr.EUnAuthCode, err)
 	}
-	usrID, _ := strconv.Atoi(usr.UserId)
-	trigUser, err := x.usrUC.Get(ctx, uint32(usrID))
+	trigUser, err := x.usrUC.Get(ctx, usr.UserId)
 	if err != nil {
-		return nil, cerr.New(cerr.EUnAuthCode, err)
+		return nil, cerr.New(cerr.EDataNotFoundCode, err)
 	}
 
 	// 获取标签和原始数据

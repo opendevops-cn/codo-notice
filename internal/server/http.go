@@ -5,6 +5,7 @@ import (
 	"codo-notice/internal/imiddleware"
 	"codo-notice/internal/service"
 	channelpb "codo-notice/pb/channel"
+	healthypb "codo-notice/pb/healthy"
 	routerpb "codo-notice/pb/router"
 	templatespb "codo-notice/pb/templates"
 	userpb "codo-notice/pb/user"
@@ -13,8 +14,8 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/logging"
 	"github.com/go-kratos/kratos/v2/middleware/metrics"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
-	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/http"
+	"github.com/opendevops-cn/codo-golang-sdk/adapter/kratos/middleware/ktracing"
 	"github.com/opendevops-cn/codo-golang-sdk/transport/chttp"
 	"go.opentelemetry.io/otel/metric"
 	"go.opentelemetry.io/otel/trace"
@@ -27,7 +28,7 @@ func NewHTTPServer(bc *conf.Bootstrap, logger log.Logger,
 	rs *service.RouterService,
 	ts *service.TemplateService,
 	us *service.UserService,
-
+	hs *service.HealthyService,
 	jwtMiddleware *imiddleware.JWTMiddleware,
 ) (*http.Server, error) {
 	c := bc.Server
@@ -45,8 +46,8 @@ func NewHTTPServer(bc *conf.Bootstrap, logger log.Logger,
 	opts := []http.ServerOption{
 		http.Middleware(
 			recovery.Recovery(),
-			tracing.Server(
-				tracing.WithTracerProvider(tp),
+			ktracing.Server(
+				ktracing.WithTracerProvider(tp),
 			),
 			logging.Server(logger),
 			metrics.Server(
@@ -84,5 +85,6 @@ func NewHTTPServer(bc *conf.Bootstrap, logger log.Logger,
 	routerpb.RegisterRouterHTTPServer(srv, rs)
 	userpb.RegisterUserHTTPServer(srv, us)
 	templatespb.RegisterTemplatesHTTPServer(srv, ts)
+	healthypb.RegisterHealthyHTTPServer(srv, hs)
 	return srv, nil
 }

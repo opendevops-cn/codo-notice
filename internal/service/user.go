@@ -9,6 +9,7 @@ import (
 	userpb "codo-notice/pb/user"
 
 	"github.com/ccheers/xpkg/generic/arrayx"
+	"github.com/opendevops-cn/codo-golang-sdk/cerr"
 	"google.golang.org/protobuf/types/known/structpb"
 )
 
@@ -46,7 +47,7 @@ func (x *UserService) ListUser(ctx context.Context, request *userpb.ListUserRequ
 func (x *UserService) GetUser(ctx context.Context, request *userpb.GetUserRequest) (*userpb.UserDTO, error) {
 	t, err := x.uc.Get(ctx, request.Id)
 	if err != nil {
-		return nil, err
+		return nil, cerr.New(cerr.EDataNotFoundCode, err)
 	}
 
 	return x.convertDTO(t), nil

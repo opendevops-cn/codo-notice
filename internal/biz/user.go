@@ -19,13 +19,13 @@ import (
 
 type IUserUseCase interface {
 	List(ctx context.Context, query UserQuery) ([]*User, uint32, error)
-	Get(ctx context.Context, id uint32) (*User, error)
+	Get(ctx context.Context, userID string) (*User, error)
 }
 
 type IUserUseRepo interface {
 	List(ctx context.Context, query UserQuery) ([]*User, error)
 	Count(ctx context.Context, query UserQuery) (uint32, error)
-	Get(ctx context.Context, id uint32) (*User, error)
+	Get(ctx context.Context, userID string) (*User, error)
 	Save(ctx context.Context, user *User) error
 	Delete(ctx context.Context, ids []uint32) error
 }
@@ -66,6 +66,8 @@ type User struct {
 	DdId string
 	// 飞书ID，最大长度128
 	FsId string
+	// 企业微信ID，最大长度128
+	WxId string
 }
 
 type UserQuery struct {
@@ -152,8 +154,8 @@ func (x *UserUseCase) List(ctx context.Context, query UserQuery) ([]*User, uint3
 	return list, count, nil
 }
 
-func (x *UserUseCase) Get(ctx context.Context, id uint32) (*User, error) {
-	return x.repo.Get(ctx, id)
+func (x *UserUseCase) Get(ctx context.Context, userID string) (*User, error) {
+	return x.repo.Get(ctx, userID)
 }
 
 func (x *UserUseCase) syncUser(ctx context.Context) error {
@@ -185,6 +187,7 @@ func (x *UserUseCase) syncUser(ctx context.Context) error {
 			UpdateTime      string   `json:"update_time"`
 		} `json:"data"`
 	}
+
 	const (
 		lockKey = "codo:notice:sync_user"
 	)

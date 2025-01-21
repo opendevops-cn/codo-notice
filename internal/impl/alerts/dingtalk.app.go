@@ -91,8 +91,10 @@ func (x *DingTalkAppAlerter) doAlert(ctx context.Context, ac biz.AlertContext) e
 	data := map[string]interface{}{
 		"to_all_user": "false",
 		"agent_id":    cfg.AgentId,
-		"userid_list": strings.Join(arrayx.Map(ac.CC, func(t *biz.User) string {
-			return t.DdId
+		"userid_list": strings.Join(arrayx.Filter(arrayx.Map(ac.CC, func(t *biz.User) string {
+			return strings.TrimSpace(t.DdId)
+		}), func(s string) bool {
+			return s != ""
 		}), ","),
 		"msg": map[string]interface{}{
 			"msgtype": "markdown",

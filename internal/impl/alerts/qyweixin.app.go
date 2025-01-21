@@ -39,7 +39,7 @@ func (x *QiYeWeiXinAppAlerter) Alert(ctx context.Context, ac biz.AlertContext) e
 	}
 	request := workwxbot.Message{
 		ToUser: strings.Join(arrayx.Filter(arrayx.Map(ac.CC, func(t *biz.User) string {
-			return t.Username
+			return t.WxId
 		}), func(m string) bool {
 			return m != ""
 		}), ","),

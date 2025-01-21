@@ -108,7 +108,7 @@ api:
 	--go-kratos-http_out=paths=source_relative:. \
 	--go_out=paths=source_relative:. \
 	--go-grpc_out=paths=source_relative:. \
-    --openapiv2_out=enums_as_ints=true,json_names_for_fields=false,allow_delete_body=true:. \
+    --openapiv2_out=json_names_for_fields=false,allow_delete_body=true:. \
     --validate_out=lang=go,paths=source_relative:. \
     --openapi_out=naming=proto:. \
 	$(API_PROTO_FILES)

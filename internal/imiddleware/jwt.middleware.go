@@ -63,14 +63,32 @@ func (x *JWTMiddleware) Server() middleware.Middleware {
 			}
 			bs, err := base64.RawStdEncoding.DecodeString(ss[1])
 			if err != nil {
-				return nil, cerr.New(cerr.EUnAuthCode, fmt.Errorf("invalid jwt token: base64解析 jwt 失败"))
+				return nil, cerr.New(cerr.EUnAuthCode, fmt.Errorf("invalid jwt token: base64解析 jwt 失败: %v", err))
 			}
-			if err := json.Unmarshal(bs, &jwt); err != nil {
-				return nil, cerr.New(cerr.EUnAuthCode, fmt.Errorf("invalid jwt token: json解析 jwt 失败"))
+			err = json.Unmarshal(bs, &jwt)
+			if err != nil {
+				return nil, cerr.New(cerr.EUnAuthCode, fmt.Errorf("invalid jwt token: json解析 jwt 失败: %v", err))
 			}
 
 			// 设置 context
-			ctx = setUserWithContext(ctx, &jwt.Data)
+			var userIDStr string
+			switch userID := jwt.Data.UserId.(type) {
+			case string:
+				userIDStr = userID
+			case int, uint, int8, uint8, int16, uint16, int32, uint32, int64, uint64:
+				userIDStr = fmt.Sprintf("%d", userID)
+			case float32, float64:
+				userIDStr = fmt.Sprintf("%.0f", userID)
+			default:
+				return nil, cerr.New(cerr.EUnAuthCode, fmt.Errorf("invalid jwt token: user_id 类型错误: %T", jwt.Data.UserId))
+			}
+			ctx = setUserWithContext(ctx, &UserInfo{
+				UserId:      userIDStr,
+				Username:    jwt.Data.Username,
+				Nickname:    jwt.Data.Nickname,
+				Email:       jwt.Data.Email,
+				IsSuperuser: jwt.Data.IsSuperuser,
+			})
 
 			// 继续执行
 			return handler(ctx, req)
@@ -79,13 +97,20 @@ func (x *JWTMiddleware) Server() middleware.Middleware {
 }
 
 type jwtInfo struct {
-	Exp  int      `json:"exp"`
-	Nbf  int      `json:"nbf"`
-	Iat  int      `json:"iat"`
-	Iss  string   `json:"iss"`
-	Sub  string   `json:"sub"`
-	Id   string   `json:"id"`
-	Data UserInfo `json:"data"`
+	Exp  int    `json:"exp"`
+	Nbf  int    `json:"nbf"`
+	Iat  int    `json:"iat"`
+	Iss  string `json:"iss"`
+	Sub  string `json:"sub"`
+	Id   string `json:"id"`
+	Data struct {
+		// userid 可能是 number 也可能是 string
+		UserId      any    `json:"user_id"`
+		Username    string `json:"username"`
+		Nickname    string `json:"nickname"`
+		Email       string `json:"email"`
+		IsSuperuser bool   `json:"is_superuser"`
+	} `json:"data"`
 }
 
 type UserInfo struct {

@@ -676,8 +676,7 @@ paths:
                   description: 用户ID
                   required: true
                   schema:
-                    type: integer
-                    format: uint32
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -738,11 +737,10 @@ components:
                 alias:
                     type: string
                     description: 别名
-                is_approve:
-                    type: boolean
-                    description: 同意 or 拒绝
-                is_reject:
-                    type: boolean
+                mode:
+                    type: integer
+                    description: 情景模式
+                    format: enum
         ChannelDTO:
             type: object
             properties:

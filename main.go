@@ -30,7 +30,7 @@ var (
 )
 
 func init() {
-	flag.StringVar(&flagconf, "conf", "etc/config.yaml", "config path, eg: -conf config.yaml")
+	flag.StringVar(&flagconf, "conf", "conf/config.yaml", "config path, eg: -conf config.yaml")
 }
 
 func newApp(bc *conf.Bootstrap, logger log.Logger, hs *http.Server, pprof *server.PprofServer,

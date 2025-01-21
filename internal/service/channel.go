@@ -188,10 +188,9 @@ func (x *ChannelService) convertContactPointDTO(item *biz.ContactPoint) *channel
 		Fixed:        item.Fixed,
 		AlertWebhooks: arrayx.Map(item.AlertWebhooks, func(t biz.AlertWebhook) *channelpb.AlertWebhookDTO {
 			return &channelpb.AlertWebhookDTO{
-				Url:       t.URL,
-				Alias:     t.Alias,
-				IsApprove: t.IsApprove,
-				IsReject:  t.IsReject,
+				Url:   t.URL,
+				Alias: t.Alias,
+				Mode:  channelpb.AlertWebhookDTO_AlertCallbackMode(t.AlertCallbackMode),
 			}
 		}),
 	}
@@ -228,10 +227,9 @@ func (x *ChannelService) convertContactPointDO(item *channelpb.ContactPointDTO) 
 		Fixed:        item.Fixed,
 		AlertWebhooks: arrayx.Map(item.AlertWebhooks, func(t *channelpb.AlertWebhookDTO) biz.AlertWebhook {
 			return biz.AlertWebhook{
-				URL:       t.Url,
-				Alias:     t.Alias,
-				IsApprove: t.IsApprove,
-				IsReject:  t.IsReject,
+				URL:               t.Url,
+				Alias:             t.Alias,
+				AlertCallbackMode: biz.AlertCallbackMode(t.Mode),
 			}
 		}),
 	}

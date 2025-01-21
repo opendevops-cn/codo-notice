@@ -12,8 +12,9 @@ type User struct {
 	Active     bool   `gorm:"type:tinyint(1);default:true;comment:是否激活" json:"active" mapstructure:"active"`
 	Tel        string `gorm:"type:varchar(32);comment:手机" json:"tel" mapstructure:"tel"`
 	Email      string `gorm:"type:varchar(128);comment:邮件" json:"email" mapstructure:"email"`
-	DataSource []byte `gorm:"type:mediumtext;comment:源数据" json:"-" mapstructure:"data_source"`
+	DataSource []byte `gorm:"type:mediumtext;comment:源数据" json:"data_source" mapstructure:"data_source"`
 	Disable    bool   `gorm:"type:tinyint(1);default:false;comment:是否禁用" json:"disable"`
 	DdID       string `gorm:"type:varchar(128);comment:钉钉ID" json:"dd_id" mapstructure:"dd_id"`
 	FsID       string `gorm:"type:varchar(128);comment:飞书ID" json:"fs_id" mapstructure:"fs_id"`
+	WxID       string `gorm:"type:varchar(128);comment:企业微信ID" json:"wx_id" mapstructure:"wx_id"`
 }

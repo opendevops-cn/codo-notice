@@ -4,13 +4,50 @@
 
 ![image-20241222150347223](https://raw.githubusercontent.com/Ccheers/pic/main/img/image-20241222150347223.png)
 
+```text
+.
+├── docs
+├── etc
+├── internal
+│   ├── biz
+│   ├── conf
+│   ├── dep
+│   ├── ievents
+│   ├── imiddleware
+│   ├── impl
+│   │   ├── alerts
+│   │   └── data
+│   │       └── models
+│   ├── pkg
+│   │   └── istr
+│   ├── server
+│   └── service
+├── meta
+├── pb
+│   ├── channel
+│   ├── healthy
+│   ├── router
+│   ├── templates
+│   └── user
+├── scripts
+└── third_party
+    ├── google
+    │   ├── api
+    │   └── protobuf
+    │       └── compiler
+    ├── khttp
+    ├── openapi
+    │   └── v3
+    └── validate
+```
+
 ## 术语解释
 
 - 消息模板(无状态): 一个消息的模板定义, 负责定义渲染引擎 & 发出渠道
 - 通知通道(有状态): 一组通知的集合, 在不同的通知级别中, 发向不同的 **消息模板**, 同时在这里配置 **消息模板** 的渠道方的配置(密钥等)
 - 通知路由(有状态): 一个消息解析&路由器, 作为一个 http 回调端点, 对回调的内容进行解析, 并将消息路由到对应配置的 **通知通道**.
-    - labels: 通知进行路由的数据依据, 从回调的 httpQuery 和 jsonBody 两处取值进行合并, 相同key 时, jsonBody 优先
-    - data: 用于消息模板的数据渲染, 从 jsonBody 取值
+  - labels: 通知进行路由的数据依据, 从回调的 httpQuery 和 jsonBody 两处取值进行合并, 相同key 时, jsonBody 优先
+  - data: 用于消息模板的数据渲染, 从 jsonBody 取值
 
 
 
@@ -68,6 +105,16 @@
 配置自定义模板:
 
 ![image-20241222154915998](https://raw.githubusercontent.com/Ccheers/pic/main/img/image-20241222154915998.png)
+
+#### 回调配置
+
+还可以配置回调用于信息交互
+
+![image-20250108143443953](https://raw.githubusercontent.com/Ccheers/pic/main/img/image-20250108143443953.png)
+
+展示
+
+![image-20250108143606522](https://raw.githubusercontent.com/Ccheers/pic/main/img/image-20250108143606522.png)
 
 ### 配置通知路由
 

@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"strconv"
 	"strings"
 	"time"
 
@@ -160,10 +159,9 @@ func (x *TemplateService) AlertTemplate(ctx context.Context, request *templatesp
 	if err != nil {
 		return nil, cerr.New(cerr.EUnAuthCode, err)
 	}
-	usrID, _ := strconv.Atoi(usr.UserId)
-	trigUser, err := x.usrUC.Get(ctx, uint32(usrID))
+	trigUser, err := x.usrUC.Get(ctx, usr.UserId)
 	if err != nil {
-		return nil, cerr.New(cerr.EUnAuthCode, err)
+		return nil, cerr.New(cerr.EDataNotFoundCode, err)
 	}
 
 	// 获取标签和原始数据
@@ -176,11 +174,8 @@ func (x *TemplateService) AlertTemplate(ctx context.Context, request *templatesp
 		}
 		labels[k] = str
 	}
-	var rawData map[string]interface{}
-	err = json.NewDecoder(httpReq.Body).Decode(&rawData)
-	if err != nil {
-		return nil, cerr.New(cerr.EParamUnparsedCode, err)
-	}
+	rawData := make(map[string]interface{})
+	_ = json.NewDecoder(httpReq.Body).Decode(&rawData)
 
 	// 获取模板
 	tplName := request.Tpl

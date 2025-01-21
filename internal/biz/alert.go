@@ -16,18 +16,22 @@ import (
 	"go.uber.org/multierr"
 )
 
-var ErrNoRouterMatch = fmt.Errorf("no routers was matched")
+var (
+	ErrNoRouterMatch = fmt.Errorf("no routers was matched")
+	ErrNoCCUsers     = fmt.Errorf("no cc users")
+)
 
 // 相关保留字段
 const (
-	FieldsMessage     = "message"      // 通用消息字段 (从 jsonBody 取值)
-	FieldsManager     = "codo_manager" // 业务负责人 (从 httpQuery + jsonBody 取值)
-	FieldsNoticer     = "codo_noticer" // 内置通知人 (从 httpQuery + jsonBody 取值)
-	FieldsSeverity    = "severity"     // 告警等级 [fatal | error | warn | info] (从 httpQuery + jsonBody 取值)
-	FieldsTitle       = "title"        // 告警标题 (从 httpQuery + jsonBody 取值)
-	FieldsNativeTitle = "codo_title"   // 原生标题 不做其他处理 (从 httpQuery + jsonBody 取值)
-	FieldsStatus      = "status"       // 告警状态 [resolved | firing | padding] (从 httpQuery + jsonBody 取值)
-	FieldsAppCn       = "cmdb_bizcn"   // 业务中文描述 (从 httpQuery + jsonBody 取值)
+	FieldsMessage      = "message"            // 通用消息字段 (从 jsonBody 取值)
+	FieldsManager      = "codo_manager"       // 业务负责人 (从 httpQuery + jsonBody 取值)
+	FieldsNoticer      = "codo_noticer"       // 内置通知人 (从 httpQuery + jsonBody 取值)
+	FieldsSeverity     = "severity"           // 告警等级 [fatal | error | warn | info] (从 httpQuery + jsonBody 取值)
+	FieldsTitle        = "title"              // 告警标题 (从 httpQuery + jsonBody 取值)
+	FieldsNativeTitle  = "codo_title"         // 原生标题 不做其他处理 (从 httpQuery + jsonBody 取值)
+	FieldsStatus       = "status"             // 告警状态 [resolved | firing | padding] (从 httpQuery + jsonBody 取值)
+	FieldsAppCn        = "cmdb_bizcn"         // 业务中文描述 (从 httpQuery + jsonBody 取值)
+	FieldsCallbackArgs = "codo_callback_args" // 回调参数, 只能是个字符串 (从 httpQuery + jsonBody 取值)
 )
 
 type AlertInfo struct {
@@ -113,7 +117,8 @@ const (
 )
 
 type WebhookRequest struct {
-	UserEmail string `json:"user_email"`
+	UserEmail    string `json:"user_email"`
+	CallbackArgs string `json:"callback_args"`
 }
 
 type WebhookResponse struct {
@@ -130,12 +135,31 @@ type WebhookResponse struct {
 	} `json:"result"`
 }
 
+// AlertCallbackMode 回调的情景模式
+type AlertCallbackMode uint32
+
+const (
+	// AlertCallbackModeNone 无情景
+	AlertCallbackModeNone = AlertCallbackMode(0)
+	// AlertCallbackModeIsApprove 强调同意
+	AlertCallbackModeIsApprove = AlertCallbackMode(1)
+	// AlertCallbackModeIsReject 强调拒绝
+	AlertCallbackModeIsReject = AlertCallbackMode(2)
+)
+
+func (x AlertCallbackMode) IsApprove() bool {
+	return x == AlertCallbackModeIsApprove
+}
+
+func (x AlertCallbackMode) IsReject() bool {
+	return x == AlertCallbackModeIsReject
+}
+
 type AlertWebhook struct {
 	URL   string
 	Alias string
-	// 同意 or 拒绝
-	IsApprove bool
-	IsReject  bool
+	// 情景模式
+	AlertCallbackMode AlertCallbackMode
 }
 
 type AlertContext struct {
@@ -160,6 +184,8 @@ type AlertContext struct {
 
 	// webhook
 	AlertWebhooks []AlertWebhook
+	// webhook回调参数
+	WebhookCallbackArgs string
 	// Template 通知模版
 	Template *Template
 	// NotifyType 通知类型, 数据与通知模板内的通知类型一致
@@ -245,6 +271,7 @@ type AlertNotifyDataTengXunDX struct {
 	SignName     string
 	Template     string
 	AppId        string
+	RegionID     string
 }
 
 func (x *AlertNotifyDataTengXunDX) IsValid() bool {
@@ -257,6 +284,7 @@ type AlertNotifyDataTengXunDH struct {
 	AccessSecret string
 	Template     string
 	AppId        string
+	RegionID     string
 }
 
 func (x *AlertNotifyDataTengXunDH) IsValid() bool {
@@ -408,10 +436,8 @@ func (x *AlertUseCase) RouteAlert(ctx context.Context, info *AlertInfo) error {
 			errs = append(errs, fmt.Errorf("get cc users failed: %w, channel_id=%d, users=%+v", err, router.ChannelID, channel.User))
 			continue
 		}
-		if len(ccUsers) == 0 {
-			x.logger.Warnf(ctx, "[AlertUseCase][RouteAlert] ccUsers is empty, channel_id=%d", router.ChannelID)
-			continue
-		}
+		// 配置抄送
+		info.CCUsers = ccUsers
 
 		// 整理 points
 		points := make([]*ContactPoint, 0, len(channel.ContactPoints)+len(channel.CustomItems))
@@ -430,8 +456,6 @@ func (x *AlertUseCase) RouteAlert(ctx context.Context, info *AlertInfo) error {
 			}
 			// 配置模板
 			info.Template = tmpl
-			// 配置抄送
-			info.CCUsers = ccUsers
 			// 配置回调
 			info.AlertWebhooks = point.AlertWebhooks
 			// todo 这里后续整体优化成 通知点配置 转化成 AlerterContext
@@ -448,7 +472,7 @@ func (x *AlertUseCase) RouteAlert(ctx context.Context, info *AlertInfo) error {
 
 			// 告警等级过滤
 			if !arrayx.ContainsAny(point.Severity, []string{string(alertCtx.Severity)}) {
-				x.logger.Debug(ctx, "[AlertUseCase][RouteAlert] severity not match", "point", point, "alert", alertCtx)
+				x.logger.Debugf(ctx, "[AlertUseCase][RouteAlert] severity not match point=%v, alert=%v", point, alertCtx)
 				continue
 			}
 
@@ -518,6 +542,10 @@ func (x *AlertUseCase) refreshRouters(ctx context.Context) error {
 }
 
 func (x *AlertUseCase) alert(ctx context.Context, alertCtx AlertContext) error {
+	// 如果没有任何通知人, 则不通知
+	if len(alertCtx.CC) == 0 {
+		return ErrNoCCUsers
+	}
 	alerter, err := x.getAlerter(alertCtx.NotifyType)
 	if err != nil {
 		return err
@@ -573,19 +601,20 @@ func (x *AlertUseCase) buildAlertContext(ctx context.Context, info *AlertInfo) (
 	}
 
 	return &AlertContext{
-		Status:          x.getStatus(labels),
-		Severity:        x.getSeverity(labels),
-		Title:           x.getTitle(labels),
-		Message:         data[FieldsMessage],
-		Args:            data,
-		TrigUser:        trigUsr,
-		Entrance:        info.Entrance,
-		CC:              noticers,
-		Manager:         managers,
-		AlertWebhooks:   info.AlertWebhooks,
-		Template:        info.Template,
-		NotifyType:      info.Template.Type,
-		AlertNotifyData: *notifyData,
+		Status:              x.getStatus(labels),
+		Severity:            x.getSeverity(labels),
+		Title:               x.getTitle(labels),
+		Message:             data[FieldsMessage],
+		Args:                data,
+		WebhookCallbackArgs: labels[FieldsCallbackArgs],
+		TrigUser:            trigUsr,
+		Entrance:            info.Entrance,
+		CC:                  noticers,
+		Manager:             managers,
+		AlertWebhooks:       info.AlertWebhooks,
+		Template:            info.Template,
+		NotifyType:          info.Template.Type,
+		AlertNotifyData:     *notifyData,
 	}, nil
 }
 
@@ -791,6 +820,7 @@ func (x *AlertUseCase) buildAlertNotifyData(ctx context.Context, info *AlertInfo
 				SignName:     tc.DxSignName,
 				Template:     tc.DxTemplate,
 				AppId:        tc.DxAppId,
+				RegionID:     "ap-guangzhou",
 			},
 		}, nil
 	case NotifyTengXunDH:
@@ -801,6 +831,7 @@ func (x *AlertUseCase) buildAlertNotifyData(ctx context.Context, info *AlertInfo
 				AccessSecret: tc.DhAccessSecret,
 				Template:     tc.DhTemplate,
 				AppId:        tc.DhAppId,
+				RegionID:     "ap-guangzhou",
 			},
 		}, nil
 
